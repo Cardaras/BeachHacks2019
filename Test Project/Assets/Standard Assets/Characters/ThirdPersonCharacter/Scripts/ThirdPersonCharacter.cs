@@ -27,12 +27,13 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		float m_CapsuleHeight;
 		Vector3 m_CapsuleCenter;
 		CapsuleCollider m_Capsule;
-		bool m_Crouching;
+		bool m_Crouching = false;
 
 
 		void Start()
 		{
-			m_Animator = GetComponent<Animator>();
+     
+            m_Animator = GetComponent<Animator>();
 			m_Rigidbody = GetComponent<Rigidbody>();
 			m_Capsule = GetComponent<CapsuleCollider>();
 			m_CapsuleHeight = m_Capsule.height;
@@ -68,7 +69,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				HandleAirborneMovement();
 			}
 
-			ScaleCapsuleForCrouching(crouch);
+			//ScaleCapsuleForCrouching(crouch);
 			//PreventStandingInLowHeadroom();
 
 			// send input and other state parameters to the animator
@@ -76,14 +77,15 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		}
 
 
-		void ScaleCapsuleForCrouching(bool crouch)
+		/**void ScaleCapsuleForCrouching(bool crouch)
 		{
+
 			if (m_IsGrounded && crouch)
 			{
 				if (m_Crouching) return;
 				m_Capsule.height = m_Capsule.height / 2f;
 				m_Capsule.center = m_Capsule.center / 2f;
-				m_Crouching = true;
+				//m_Crouching = true;
 			}
 			else
 			{
@@ -91,16 +93,17 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				float crouchRayLength = m_CapsuleHeight - m_Capsule.radius * k_Half;
 				if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, crouchRayLength, Physics.AllLayers, QueryTriggerInteraction.Ignore))
 				{
-					m_Crouching = true;
+					//m_Crouching = true;
 					return;
 				}
 				m_Capsule.height = m_CapsuleHeight;
 				m_Capsule.center = m_CapsuleCenter;
 				m_Crouching = false;
 			}
-		}
+			
+		}**/
 
-		void PreventStandingInLowHeadroom()
+		/**void PreventStandingInLowHeadroom()
 		{
 			// prevent standing up in crouch-only zones
 			if (!m_Crouching)
@@ -109,10 +112,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				float crouchRayLength = m_CapsuleHeight - m_Capsule.radius * k_Half;
 				if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, crouchRayLength, Physics.AllLayers, QueryTriggerInteraction.Ignore))
 				{
-					m_Crouching = true;
+					//m_Crouching = true;
 				}
 			}
-		}
+		}**/
 
 
 		void UpdateAnimator(Vector3 move)
@@ -165,15 +168,19 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
 		void HandleGroundedMovement(bool crouch, bool jump)
 		{
-			// check whether conditions are right to allow a jump:
-			if (jump && !crouch && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
-			{
+            // check whether conditions are right to allow a jump:
+            if (jump && !crouch && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
+            //if (jump && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
+            {
 				// jump!
 				m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_JumpPower, m_Rigidbody.velocity.z);
 				m_IsGrounded = false;
 				m_Animator.applyRootMotion = false;
 				m_GroundCheckDistance = 0.1f;
-			}
+            }
+            else {
+                m_IsGrounded =true;
+            }
 		}
 
 		void ApplyExtraTurnRotation()
@@ -181,6 +188,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			// help the character turn faster (this is in addition to root rotation in the animation)
 			float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
 			transform.Rotate(0, m_TurnAmount * turnSpeed * Time.deltaTime, 0);
+            if (!m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Airborne")) {
+                m_IsGrounded =true;
+            }
+
 		}
 
 

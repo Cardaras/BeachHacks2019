@@ -16,7 +16,7 @@ public class RagdollController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             Debug.Log("Ragdoll");
             toggleRagdoll(true);
