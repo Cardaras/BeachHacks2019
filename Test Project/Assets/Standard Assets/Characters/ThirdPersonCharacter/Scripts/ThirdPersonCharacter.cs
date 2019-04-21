@@ -19,6 +19,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         [SerializeField] float m_AnimSpeedMultiplier = 1f;
 		[SerializeField] float m_GroundCheckDistance = 0.1f;
 
+        public LayerMask whatIsGround;
+
 		Rigidbody m_Rigidbody;
 		Animator m_Animator;
 		bool m_IsGrounded;
@@ -32,6 +34,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		CapsuleCollider m_Capsule;
 		bool m_Crouching = false;
         bool is_sprinting = false;
+
 
 
         public void SetIsSprinting(bool is_sprinting)
@@ -148,14 +151,18 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			// calculate which leg is behind, so as to leave that leg trailing in the jump animation
 			// (This code is reliant on the specific run cycle offset in our animations,
 			// and assumes one leg passes the other at the normalized clip times of 0.0 and 0.5)
-			float runCycle =
-				Mathf.Repeat(
-					m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime + m_RunCycleLegOffset, 1);
+			float runCycle = Mathf.Repeat( m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime + m_RunCycleLegOffset, 1);
 			float jumpLeg = (runCycle < k_Half ? 1 : -1) * m_ForwardAmount;
 			if (m_IsGrounded)
 			{
 				m_Animator.SetFloat("JumpLeg", jumpLeg);
 			}
+            else
+            {
+                //Debug.Log(+move.x+","+m_Rigidbody.velocity.y+","+move.z);
+                //m_Rigidbody.AddForce(transform.forward, ForceMode.Acceleration);
+                //m_Rigidbody.velocity = new Vector3(move.x*2, m_Rigidbody.velocity.y, move.z*2);
+            }
 
 			// the anim speed multiplier allows the overall speed of walking/running to be tweaked in the inspector,
 			// which affects the movement speed because of the root motion.
@@ -173,8 +180,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
 		void HandleAirborneMovement()
 		{
-			// apply extra gravity from multiplier:
-			Vector3 extraGravityForce = (Physics.gravity * m_GravityMultiplier) - Physics.gravity;
+            //Debug.Log(m_Rigidbody.velocity);
+            // apply extra gravity from multiplier:
+            Vector3 extraGravityForce = (Physics.gravity * m_GravityMultiplier) - Physics.gravity;
 			m_Rigidbody.AddForce(extraGravityForce);
 
 			m_GroundCheckDistance = m_Rigidbody.velocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
@@ -187,14 +195,17 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             if (jump && !crouch && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
             //if (jump && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
             {
-				// jump!
+                // jump!
+                Debug.Log(m_Rigidbody.velocity);
 				m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_JumpPower, m_Rigidbody.velocity.z);
+                //m_Rigidbody.AddRelativeForce(Vector3.forward * 500);
 				m_IsGrounded = false;
 				m_Animator.applyRootMotion = false;
 				m_GroundCheckDistance = 0.1f;
             }
-            else {
-                m_IsGrounded =true;
+            else 
+            {
+                m_IsGrounded = true;
             }
 		}
 
@@ -225,6 +236,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				v.y = m_Rigidbody.velocity.y;
 				m_Rigidbody.velocity = v;
 			}
+
 		}
 
 
@@ -253,7 +265,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 #endif
 			// 0.1f is a small offset to start the ray from inside the character
 			// it is also good to note that the transform position in the sample assets is at the base of the character
-			if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hitInfo, m_GroundCheckDistance))
+			if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hitInfo, m_GroundCheckDistance, whatIsGround.value))
 			{
 				m_GroundNormal = hitInfo.normal;
 				m_IsGrounded = true;

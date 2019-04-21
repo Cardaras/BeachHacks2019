@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class RagdollController : MonoBehaviour
 {
-    public Animator anim;
+    public Animator run_anim;
     public Rigidbody[] rbs;
+
+    public GameObject test;
+
+    public GameObject ragdollRoot;
 
     private bool is_sprinting = false;
 
-    private float tackleDelay = 0.3f;
-    private float ragdollDelay = 0.4f;
+    private float tackleDelay = 1f;
+    private float ragdollDelay = 0.1f;
 
-    private float forwardForce = 500f;
+    private float forwardForce = 100f;
+
+
+    private bool isRagdolled = false;
 
     // Start is called before the first frame update
     void Awake()
@@ -29,18 +36,29 @@ public class RagdollController : MonoBehaviour
             //Debug.Log("Ragdoll");
             toggleRagdoll(true);
         }
-        /*
+
         if(Input.GetKeyDown(KeyCode.Space) && 
             GetComponent<UnityStandardAssets.Characters.ThirdPerson.ThirdPersonCharacter>().IsMaxSprint())
         {
-            StartCoroutine(Tackle());
-            StartCoroutine(Ragdoll());
+
+            //StartCoroutine(Tackle());
+            //StartCoroutine(Ragdoll());
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            StartCoroutine(Tackle());
+        }
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            toggleRagdoll(false);
+        }
+
         if (Input.GetKeyDown(KeyCode.T))
         {
             StartCoroutine(Tackle());
         }
-        */
+
         if (Input.GetKeyDown(KeyCode.LeftShift) && !is_sprinting)
         {
             //Debug.Log("Sprint on");
@@ -55,10 +73,21 @@ public class RagdollController : MonoBehaviour
 
     private IEnumerator Tackle()
     {
-        yield return new WaitForSeconds(tackleDelay);
-        Rigidbody rb = GetComponent<Rigidbody>();
-        rb.AddForce(Vector3.forward * forwardForce);
-
+        //yield return new WaitForSeconds(tackleDelay);
+        toggleRagdoll(true);
+        Rigidbody rb = ragdollRoot.GetComponent<Rigidbody>();
+        rb.AddForce(transform.forward*forwardForce+ transform.up*forwardForce, ForceMode.Impulse);
+        yield return new WaitForFixedUpdate();
+        bool done = false;
+        while(!done)
+        {
+            if(rb.velocity.magnitude < 0.1)
+            {
+                done = true;
+            }
+            yield return null;
+        }
+        toggleRagdoll(false);
     }
 
     private IEnumerator Ragdoll()
@@ -69,12 +98,19 @@ public class RagdollController : MonoBehaviour
 
     private void toggleRagdoll(bool isRagdoll)
     {
-        anim.enabled = !isRagdoll;
+        if (isRagdolled == isRagdoll)
+            return;
+        isRagdolled = isRagdoll;
+        run_anim.enabled = !isRagdoll; 
         foreach (var item in rbs)
         {
             item.isKinematic = !isRagdoll;
         }
-        //void HandleAirborneMovement()
+        if(!isRagdoll)
+        {
+            this.transform.position = ragdollRoot.transform.position;
+            ragdollRoot.transform.localPosition = Vector3.zero;
+        }
 
     }
 
