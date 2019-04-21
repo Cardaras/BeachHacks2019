@@ -39,25 +39,23 @@ public class FlagZone : MonoBehaviour
         }
     }
 
-    /*
-    private void OnTriggerEnter(Collider other)
-    {
-        GameObject go = other.transform.gameObject;
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    GameObject go = other.transform.gameObject;
 
-        //Debug.Log("Something entered = "+go.tag);
-        if (go.CompareTag(AllTags.PLAYER_TAG) && go.GetComponent<FlagHandler>().HasFlag() == false)
-        {
+    //    //Debug.Log("Something entered = "+go.tag);
+    //    if (go.CompareTag(AllTags.PLAYER_TAG) && go.GetComponent<FlagHandler>().HasFlag() == false)
+    //    {
 
-            //Debug.Log("Player collided");
-            flag.transform.parent = GameObject.Find(LEFT_HAND).transform; //go.transform.FindChild(LEFT_HAND).transform;
-            flag.transform.localPosition = new Vector3(0,-0.05f,0);
-            flag.transform.eulerAngles = new Vector3(0,125,0);
-            flag.transform.localScale = new Vector3(1f, 1f, 1f);
+    //        //Debug.Log("Player collided");
+    //        flag.transform.parent = GameObject.Find(LEFT_HAND).transform; //go.transform.FindChild(LEFT_HAND).transform;
+    //        flag.transform.localPosition = new Vector3(0,-0.05f,0);
+    //        flag.transform.eulerAngles = new Vector3(0,125,0);
+    //        flag.transform.localScale = new Vector3(1f, 1f, 1f);
 
-            go.GetComponent<FlagHandler>().SetFlag(true, flag);
-        }
-    }
-    */
+    //        go.GetComponent<FlagHandler>().SetFlag(true, flag);
+    //    }
+    //}
 
     private void CreateFlag()
     {
