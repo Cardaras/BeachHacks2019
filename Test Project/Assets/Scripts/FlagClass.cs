@@ -24,7 +24,7 @@ public class FlagClass : MonoBehaviour
         GameObject go = other.transform.gameObject;
 
         //Debug.Log("Something entered = "+go.tag);
-        if (go.CompareTag(AllTags.PLAYER_TAG) && go.GetComponent<FlagHandler>().HasFlag() == false)
+        if (go.CompareTag(AllTags.PLAYER_TAG) && go.name.Equals("xbotwithcamera") && go.GetComponent<FlagHandler>().HasFlag() == false)
         {
 
             //Debug.Log("Player collided");
