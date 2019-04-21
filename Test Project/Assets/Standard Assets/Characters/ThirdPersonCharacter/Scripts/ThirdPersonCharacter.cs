@@ -12,8 +12,11 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		[SerializeField] float m_JumpPower = 12f;
 		[Range(1f, 4f)][SerializeField] float m_GravityMultiplier = 2f;
 		[SerializeField] float m_RunCycleLegOffset = 0.2f; //specific to the character in sample assets, will need to be modified to work with others
-		[SerializeField] float m_MoveSpeedMultiplier = 1f;
-		[SerializeField] float m_AnimSpeedMultiplier = 1f;
+        [SerializeField] float m_MoveSpeedMultiplier = 1f;
+        private float m_MoveSpeedMultiplierNormal = 1f;
+        private float m_MoveSpeedMultiplierSprint = 2.0f;
+        private float SprintScalar = 3f;
+        [SerializeField] float m_AnimSpeedMultiplier = 1f;
 		[SerializeField] float m_GroundCheckDistance = 0.1f;
 
 		Rigidbody m_Rigidbody;
@@ -28,10 +31,22 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		Vector3 m_CapsuleCenter;
 		CapsuleCollider m_Capsule;
 		bool m_Crouching = false;
+        bool is_sprinting = false;
 
 
-		void Start()
+        public void SetIsSprinting(bool is_sprinting)
+        {
+            this.is_sprinting = is_sprinting;
+        }
+
+        public bool IsMaxSprint()
+        {
+            return Mathf.Abs(m_MoveSpeedMultiplier - m_MoveSpeedMultiplierSprint) <= 0.1f;
+        }
+
+        void Start()
 		{
+   
      
             m_Animator = GetComponent<Animator>();
 			m_Rigidbody = GetComponent<Rigidbody>();
@@ -201,6 +216,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			// this allows us to modify the positional speed before it's applied.
 			if (m_IsGrounded && Time.deltaTime > 0)
 			{
+
+
+                UpdateMoveSpeed();
 				Vector3 v = (m_Animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
 
 				// we preserve the existing y part of the current velocity.
@@ -209,6 +227,22 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			}
 		}
 
+
+
+        void UpdateMoveSpeed()
+        {
+       
+            if (is_sprinting)
+            {
+                m_MoveSpeedMultiplier = Mathf.Lerp(m_MoveSpeedMultiplier, 
+                    m_MoveSpeedMultiplierSprint, Time.deltaTime * SprintScalar);
+            }
+            else
+            {
+                m_MoveSpeedMultiplier = Mathf.Lerp(m_MoveSpeedMultiplier,
+                    m_MoveSpeedMultiplierNormal, Time.deltaTime * SprintScalar);
+            }
+        }
 
 		void CheckGroundStatus()
 		{
@@ -233,4 +267,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			}
 		}
 	}
+
+
 }

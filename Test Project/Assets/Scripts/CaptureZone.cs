@@ -25,16 +25,13 @@ public class CaptureZone : MonoBehaviour
         //Debug.Log("Something entered = "+go.tag);
         if (go.CompareTag(AllTags.PLAYER_TAG))
         {
-            Debug.Log("Player collided");
-            int childCount = go.transform.childCount;
-            for (int i = 0;i < childCount; i++)
+            Debug.Log("Player in capture zone");
+            if (go.GetComponent<FlagHandler>().HasFlag())
             {
-                if (go.transform.GetChild(i).CompareTag(AllTags.FLAG_TAG))
-                {
-                    Debug.Log("Flag captured");
-                    Destroy(go.transform.GetChild(i).gameObject);
-                    break;
-                }
+                Debug.Log("Capture");
+                go.GetComponent<FlagHandler>().DestroyFlag();
+                go.GetComponent<FlagHandler>().SetFlag(false, null);
+
             }
 
            
