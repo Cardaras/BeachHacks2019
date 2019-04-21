@@ -42,9 +42,8 @@ public class FlagZone : MonoBehaviour
         {
             //Debug.Log("Player collided");
             flag.transform.parent = GameObject.Find(LEFT_HAND).transform; //go.transform.FindChild(LEFT_HAND).transform;
-            flag.transform.localPosition = new Vector3(-0.07f,0.16f,-0.05f);
-            flag.transform.Rotate(new Vector3(144.8f, 0, 0));
-            //flag.transform.eulerAngles = new Vector3(144.8f, 0, 0);
+            flag.transform.localPosition = new Vector3(0,0.1f,0);
+            flag.transform.eulerAngles = new Vector3(0,0,0);
             flag.transform.localScale = new Vector3(1f, 1f, 1f);
         }
     }
