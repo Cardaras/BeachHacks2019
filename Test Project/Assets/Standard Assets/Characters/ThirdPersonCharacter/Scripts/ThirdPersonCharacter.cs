@@ -184,8 +184,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             // apply extra gravity from multiplier:
             Vector3 extraGravityForce = (Physics.gravity * m_GravityMultiplier) - Physics.gravity;
 			m_Rigidbody.AddForce(extraGravityForce);
-
-			m_GroundCheckDistance = m_Rigidbody.velocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
+            m_Rigidbody.AddForce(transform.forward * 17, ForceMode.Force);
+            m_GroundCheckDistance = m_Rigidbody.velocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
 		}
 
 
