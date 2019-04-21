@@ -6,7 +6,7 @@ public class FlagZone : MonoBehaviour
 {
 
     private GameObject flag;
-    private string LEFT_HAND = "EthanLeftHand";
+    private string LEFT_HAND = "mixamorig:LeftHand";
 
     // Start is called before the first frame update
     void Start()
@@ -42,8 +42,8 @@ public class FlagZone : MonoBehaviour
         {
             //Debug.Log("Player collided");
             flag.transform.parent = GameObject.Find(LEFT_HAND).transform; //go.transform.FindChild(LEFT_HAND).transform;
-            flag.transform.localPosition = new Vector3(0,0.1f,0);
-            flag.transform.eulerAngles = new Vector3(0,0,0);
+            flag.transform.localPosition = new Vector3(0,-0.05f,0);
+            flag.transform.eulerAngles = new Vector3(0,125,0);
             flag.transform.localScale = new Vector3(1f, 1f, 1f);
         }
     }
